@@ -1,0 +1,179 @@
+@charset "UTF-8";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-size: 16px;
+}
+
+body {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  background-color: #fff5e9;
+}
+
+.main {
+  margin: 50px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.service {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 700px;
+}
+
+.service-name {
+  color: red;
+  text-transform: uppercase;
+  font-size: 24px;
+}
+
+.first-letter::first-letter {
+  color: red;
+}
+
+.initial-letter::first-letter {
+  color: red;
+  initial-letter: 2;
+}
+
+.indent, .propers {
+  text-indent: 30px;
+  text-align: justify;
+  align-self: flex-start;
+}
+
+.propers {
+  background-color: #faf5f0;
+  padding: 7px 10px;
+  box-shadow: 0px 0px 4px 1px rgb(193, 182, 162);
+  border: solid 1px #faf5f0;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.verse {
+  margin-left: 30px;
+  text-align: left;
+  align-self: flex-start;
+}
+.verse span:not(.prayer-incipit) {
+  margin-left: 20px;
+  display: block;
+}
+
+.margin-text {
+  margin-top: 10px;
+}
+
+.prokeimenon, .ektenia__choir {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.prokeimenon .rubric, .prokeimenon .rubric--glory, .ektenia__choir .rubric, .ektenia__choir .rubric--glory {
+  margin: 0;
+  margin-right: 5px;
+  text-indent: 30px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.prokeimenon .indent, .ektenia__choir .indent, .prokeimenon .propers, .ektenia__choir .propers {
+  text-indent: 10px;
+  margin-left: 10px;
+}
+
+.ektenia__choir {
+  margin-left: 20px;
+}
+.ektenia__choir .rubric, .ektenia__choir .rubric--glory {
+  margin: 0;
+  margin-right: 5px;
+  text-indent: 30px;
+  line-height: 1.5;
+}
+.ektenia__choir .indent, .ektenia__choir .propers {
+  text-indent: 10px;
+  margin-left: 10px;
+}
+
+.priest:before {
+  content: "Kapłan: ";
+  color: red;
+  font-size: 14px;
+}
+
+.inline-paragraph {
+  display: inline;
+}
+.inline-paragraph p {
+  display: inline;
+}
+
+.rubric, .rubric--glory {
+  margin: 10px 0 5px 0;
+  color: red;
+  font-size: 14px;
+}
+
+.rubric + .rubric, .rubric--glory + .rubric, .rubric + .rubric--glory, .rubric--glory + .rubric--glory {
+  margin: 0 0 5px 0;
+  color: red;
+  font-size: 14px;
+}
+
+.rubric--quote {
+  display: inline-block;
+  color: black;
+  font-weight: 600;
+}
+.rubric--quote::first-letter {
+  color: red;
+}
+
+.rubric--glory {
+  font-weight: 600;
+}
+
+.service-h3 {
+  color: red;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 18px;
+  padding: 10px 0;
+}
+
+.service__header {
+  width: 100%;
+  position: fixed;
+  top: 5px;
+  left: 5px;
+}
+
+.prayer-incipit {
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.stichera {
+  margin: 10px 0;
+}
+
+@media screen and (max-width: 500px) {
+  .main {
+    margin: 50px 30px;
+  }
+  .indent, .propers {
+    text-align: unset;
+  }
+}/*# sourceMappingURL=styles.css.map */

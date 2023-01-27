@@ -1,0 +1,178 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root {
+    font-size: 16px;
+}
+
+$red: red;
+$black: black;
+$background-light: #fff5e9;
+$propers-light: #faf5f0;
+
+body {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    background-color: $background-light;
+}
+.main {
+    margin: 50px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.service {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 700px;
+}
+.service-name {
+    color: $red;
+    text-transform: uppercase;
+    font-size: 24px;
+}
+
+.first-letter::first-letter {
+ color: $red;
+}
+.initial-letter::first-letter {
+    color: $red;
+    initial-letter: 2;
+}
+.indent {
+ text-indent: 30px;
+ text-align:justify;
+ align-self: flex-start;
+}
+.propers {
+    @extend .indent;
+    background-color: $propers-light;
+    padding: 7px 10px;
+    -webkit-box-shadow: 0px 0px 4px 1px rgba(193, 182, 162, 1);
+    -moz-box-shadow: 0px 0px 4px 1px rgba(193, 182, 162, 1);
+    box-shadow: 0px 0px 4px 1px rgba(193, 182, 162, 1);
+    border: solid 1px $propers-light;
+    border-radius: 5px;
+    width: 100%;
+}
+.verse {
+    margin-left: 30px;
+    text-align: left;
+    align-self: flex-start;
+    span:not(.prayer-incipit) {
+        margin-left: 20px;
+        display: block;
+    }
+}
+.margin-text {
+    margin-top: 10px;
+}
+.prokeimenon {
+    width: 100%;
+display: flex;
+flex-direction: row;
+align-items:flex-start;
+justify-content: flex-start;
+.rubric {
+    margin: 0;
+    margin-right: 5px;
+    text-indent: 30px;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+.indent {
+    text-indent: 10px;
+    margin-left: 10px;
+}
+}
+.ektenia__choir {
+    @extend .prokeimenon;
+    
+    margin-left: 20px;
+    .rubric {
+        margin: 0;
+        margin-right: 5px;
+        text-indent: 30px;
+        line-height: 1.5;
+    }
+    .indent {
+        text-indent: 10px;
+        margin-left: 10px;
+    }
+}
+
+
+
+.priest:before {
+    content: "Kapłan: ";
+    color: $red;
+    font-size: 14px;
+}
+
+.inline-paragraph {
+    display: inline;
+    p {
+        display: inline;
+    }
+}
+
+.rubric {
+    margin: 10px 0 5px 0;
+    color: $red;
+    font-size: 14px;
+}
+.rubric + .rubric {
+    margin: 0 0 5px 0;
+    color: $red;
+    font-size: 14px;
+}
+.rubric--quote {
+    display: inline-block;
+    color: $black;
+    font-weight: 600;
+    &::first-letter {
+        color: $red;
+    }
+}
+.rubric--glory {
+    @extend .rubric;
+    font-weight: 600;
+}
+
+.service-h3 {
+    color: $red;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 18px;
+    padding: 10px 0;
+
+}
+
+.service__header {
+    width: 100%;
+    position: fixed;
+    top: 5px;
+    left: 5px;
+}
+
+.prayer-incipit {
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.stichera {
+    margin: 10px 0;
+}
+
+@media screen and (max-width: 500px) {
+    .main {
+        margin: 50px 30px;
+    }
+    .indent {
+        text-align: unset;
+    }
+}
