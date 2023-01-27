@@ -15,7 +15,6 @@ const Vespers = () => {
 
   function getWeeksDiff(startDate, endDate) {
     const msInWeek = 1000 * 60 * 60 * 24 * 7;
-console.log("date subtract", (Math.abs(endDate - startDate))/msInWeek)
     return Math.ceil(Math.abs(endDate - startDate) / msInWeek);
   }
 
@@ -37,12 +36,8 @@ console.log("date subtract", (Math.abs(endDate - startDate))/msInWeek)
     } else {
       toneNum = Math.ceil(weeksDiff % 8);}
     
-    console.log("(weeksDiff % 8)",(weeksDiff % 8))
-    console.log(weeksDiff)
-    console.log(toneNum)
     return toneNum;
   };
-  console.log(date.toISOString().slice(0, 10));
 
   const getStichos = async (tone, day, isAposticha) => {
     let sticheraArray = [];
@@ -55,9 +50,7 @@ console.log("date subtract", (Math.abs(endDate - startDate))/msInWeek)
       .order("stichos", { ascending: false });
 
     let data = octoechos;
-    console.log(data);
     data.forEach((el) => (sticheraArray = [...sticheraArray, el.text]));
-    console.log(sticheraArray);
     if (!isAposticha) {
       setStichera(sticheraArray);
     } else {
@@ -65,12 +58,12 @@ console.log("date subtract", (Math.abs(endDate - startDate))/msInWeek)
     }
   };
 
-  const getProkeimenon = async (tone, day) => {
+  const getProkeimenon = async (day) => {
     let prokeimenonArray = [];
     let { data: octoechos, error } = await supabase
       .from("octoechos-vespers-prokeimena")
       .select("prokeimenon-1,prokeimenon-2,prokeimenon-3, prokeimenon-4")
-      .eq("tone", tone)
+      // .eq("tone", tone)
       .eq("weekday", day);
     let data = octoechos[0];
     console.log("prokeimena", data);
@@ -94,7 +87,6 @@ console.log("date subtract", (Math.abs(endDate - startDate))/msInWeek)
     //   }
     // }
 
-    console.log(arr);
     setProkeimenon(arr);
   };
   let day = date.getDay();
@@ -105,14 +97,15 @@ console.log("date subtract", (Math.abs(endDate - startDate))/msInWeek)
     setDate(dateFormatted);
     weeksDiff = getWeeksDiff(new Date("2022-06-25"), dateFormatted);
     tone = getOctoechosTone(weeksDiff);
+    console.log("new tone", tone)
     day = dateFormatted.getDay();
+    console.log("new day", day)
     getStichos(tone, day, false);
     getStichos(tone, day, true);
-    getProkeimenon(tone, day);
+    getProkeimenon(day);
   };
 
   let tone = getOctoechosTone(weeksDiff);
-  console.log("tone", tone);
 
   const weekdays = [
     "niedziela",
@@ -127,7 +120,7 @@ console.log("date subtract", (Math.abs(endDate - startDate))/msInWeek)
   useEffect(() => {
     getStichos(tone, day, false);
     getStichos(tone, day, true);
-    getProkeimenon(tone, day);
+    getProkeimenon(day);
   }, []);
 
   return (
@@ -578,7 +571,36 @@ console.log("date subtract", (Math.abs(endDate - startDate))/msInWeek)
         Po ekfonesis stichery na stichownie, wśród których mówimy te isomelosy,
         jeśli nie ma święta Pańskiego.
       </p>
+      {day === 6 ? <><p className="first-letter propers stichera">{aposticha[4]}</p>
+      <p className="rubric">Stichos 1: </p>
+      <p className="first-letter verse">
+      Pan zakrólował, w majestat jest obleczony.
+      <span>Obleczony jest Pan, przepasany potęgą.</span>
+      </p>
       <p className="first-letter propers stichera">{aposticha[3]}</p>
+      <p className="rubric">Stichos 2: </p>
+      <p className="first-letter verse">
+      A świat, który umocnił,
+      <span>nie zachwieje się.</span> 
+      </p>
+      <p className="first-letter propers stichera">{aposticha[2]}</p>
+      <p className="rubric">Stichos 2: </p>
+      <p className="first-letter verse">
+      Domowi Twemu, Panie,
+      <span>przystoi świętość po wszystkie dni.</span> 
+      </p>
+      <p className="first-letter propers stichera">{aposticha[1]}</p>
+      <p className="rubric">
+        Jeśli jest sobota, mówimy Pan zakrólował, jak to wskazano (s. ). Jeśli
+        wypadanie święto Pańskie, to jego stichosy. Tak samo, jeśli wypadnie
+        wspomnienie świętego.
+      </p>
+      <p className="rubric">
+        <span className="rubric--glory">Chwała, i teraz.</span>
+      </p>{" "}
+      <p className="rubric">Teotokion:</p>
+      <p className="first-letter propers stichera">{aposticha[0]}</p></> 
+      : <><p className="first-letter propers stichera">{aposticha[3]}</p>
       <p className="rubric">Stichos 1: </p>
       <p className="first-letter verse">
         Do Ciebie wznoszę oczy moje,
@@ -606,7 +628,8 @@ console.log("date subtract", (Math.abs(endDate - startDate))/msInWeek)
         <span className="rubric--glory">Chwała, i teraz.</span>
       </p>{" "}
       <p className="rubric">Teotokion:</p>
-      <p className="first-letter propers stichera">{aposticha[0]}</p>
+      <p className="first-letter propers stichera">{aposticha[0]}</p></>}
+      
       <p className="rubric">Także modlitwa świętego Symeona Starca:</p>
       <p className="first-letter indent">
         T<span className="prayer-incipit">eraz pozwalasz odejść</span> słudze
