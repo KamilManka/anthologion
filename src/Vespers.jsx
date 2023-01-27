@@ -144,7 +144,7 @@ const Vespers = () => {
       </div>
       <h2 className="service-name">Nieszpory</h2>
       <p className="rubric">
-        Ton {tone}, {weekdays[day]}
+        Ton {day != 6 ? tone : tone+1}, {weekdays[day]}
       </p>
       {!readerView ? (
         <RegularInitialPrayers />
