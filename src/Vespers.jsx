@@ -15,24 +15,32 @@ const Vespers = () => {
 
   function getWeeksDiff(startDate, endDate) {
     const msInWeek = 1000 * 60 * 60 * 24 * 7;
-
-    return Math.round(Math.abs(endDate - startDate) / msInWeek);
+console.log("date subtract", (Math.abs(endDate - startDate))/msInWeek)
+    return Math.ceil(Math.abs(endDate - startDate) / msInWeek);
   }
 
   console.log(
     getWeeksDiff(
-      new Date("2022-06-26"),
+      new Date("2022-06-25"),
       new Date(date.toISOString().slice(0, 10))
     )
   );
 
   let weeksDiff = getWeeksDiff(
-    new Date("2022-06-26"),
+    new Date("2022-06-25"),
     new Date(date.toISOString().slice(0, 10))
   );
   const getOctoechosTone = (weeksDiff) => {
-    let tone = weeksDiff % 8;
-    return tone;
+    let toneNum = 0;
+    if (weeksDiff % 8 === 0) {
+      toneNum = 8;
+    } else {
+      toneNum = Math.ceil(weeksDiff % 8);}
+    
+    console.log("(weeksDiff % 8)",(weeksDiff % 8))
+    console.log(weeksDiff)
+    console.log(toneNum)
+    return toneNum;
   };
   console.log(date.toISOString().slice(0, 10));
 
@@ -94,10 +102,13 @@ const Vespers = () => {
   const onDateChange = (dateRaw, dateString) => {
     console.log(dateRaw.$d);
     let dateFormatted = dateRaw.$d;
+    setDate(dateFormatted);
+    weeksDiff = getWeeksDiff(new Date("2022-06-25"), dateFormatted);
+    tone = getOctoechosTone(weeksDiff);
     day = dateFormatted.getDay();
-    getStichos(7, day, false);
-    getStichos(7, day, true);
-    getProkeimenon(7, day);
+    getStichos(tone, day, false);
+    getStichos(tone, day, true);
+    getProkeimenon(tone, day);
   };
 
   let tone = getOctoechosTone(weeksDiff);
