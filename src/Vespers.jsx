@@ -20,21 +20,25 @@ const Vespers = () => {
 
   console.log(
     getWeeksDiff(
-      new Date("2022-06-25"),
+      new Date("2022-06-26"),
       new Date(date.toISOString().slice(0, 10))
     )
   );
 
   let weeksDiff = getWeeksDiff(
-    new Date("2022-06-25"),
+    new Date("2022-06-24"),
     new Date(date.toISOString().slice(0, 10))
   );
   const getOctoechosTone = (weeksDiff) => {
     let toneNum = 0;
+    console.log("weeksDiff", weeksDiff)
     if (weeksDiff % 8 === 0) {
       toneNum = 8;
+      console.log("if", toneNum)
     } else {
-      toneNum = Math.ceil(weeksDiff % 8);}
+      toneNum = Math.ceil(weeksDiff % 8);
+      console.log("else", toneNum)
+    }
     
     return toneNum;
   };
@@ -106,6 +110,7 @@ const Vespers = () => {
   };
 
   let tone = getOctoechosTone(weeksDiff);
+  console.log("tone", tone)
 
   const weekdays = [
     "niedziela",
