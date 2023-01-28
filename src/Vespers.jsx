@@ -3,8 +3,21 @@ import { useState, useEffect } from "react";
 import GreatEktenia from "./GreatEktenia";
 import LittleEktenia from "./LittleEktenia";
 import { supabase } from "./supabaseClient";
-import { Switch, Space, DatePicker } from "antd";
+import {
+  Switch,
+  Space,
+  DatePicker,
+  Dropdown,
+  MenuProps,
+  ConfigProvider,
+} from "antd";
 import RegularInitialPrayers from "./RegularInitialPrayers";
+import { SettingOutlined, SettingTwoTone } from "@ant-design/icons";
+import { RiSettings4Fill } from "react-icons/ri";
+import plPL from 'antd/locale/pl_PL';
+import dayjs from 'dayjs';
+import 'dayjs/locale/pl';
+dayjs.locale('pl-pl');
 
 const Vespers = () => {
   let [stichera, setStichera] = useState([]);
@@ -12,7 +25,8 @@ const Vespers = () => {
   let [prokeimenon, setProkeimenon] = useState([]);
   const [readerView, setReaderView] = useState();
   let [date, setDate] = useState(new Date());
-
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const locale = plPL;
   function getWeeksDiff(startDate, endDate) {
     const msInWeek = 1000 * 60 * 60 * 24 * 7;
     return Math.ceil(Math.abs(endDate - startDate) / msInWeek);
@@ -31,15 +45,15 @@ const Vespers = () => {
   );
   const getOctoechosTone = (weeksDiff) => {
     let toneNum = 0;
-    console.log("weeksDiff", weeksDiff)
+    console.log("weeksDiff", weeksDiff);
     if (weeksDiff % 8 === 0) {
       toneNum = 8;
-      console.log("if", toneNum)
+      console.log("if", toneNum);
     } else {
       toneNum = Math.ceil(weeksDiff % 8);
-      console.log("else", toneNum)
+      console.log("else", toneNum);
     }
-    
+
     return toneNum;
   };
 
@@ -67,7 +81,6 @@ const Vespers = () => {
     let { data: octoechos, error } = await supabase
       .from("octoechos-vespers-prokeimena")
       .select("prokeimenon-1,prokeimenon-2,prokeimenon-3, prokeimenon-4")
-      // .eq("tone", tone)
       .eq("weekday", day);
     let data = octoechos[0];
     console.log("prokeimena", data);
@@ -83,14 +96,6 @@ const Vespers = () => {
       }
     }
 
-    // let index = prokeimenonArray.indexOf(null);
-    // if (index !== -1) {
-    //   while (index !== null) {
-    //     prokeimenonArray.splice(index, 1);
-    //     index = prokeimenonArray.indexOf(null);
-    //   }
-    // }
-
     setProkeimenon(arr);
   };
   let day = date.getDay();
@@ -101,16 +106,16 @@ const Vespers = () => {
     setDate(dateFormatted);
     weeksDiff = getWeeksDiff(new Date("2022-06-25"), dateFormatted);
     tone = getOctoechosTone(weeksDiff);
-    console.log("new tone", tone)
+    console.log("new tone", tone);
     day = dateFormatted.getDay();
-    console.log("new day", day)
+    console.log("new day", day);
     getStichos(tone, day, false);
     getStichos(tone, day, true);
     getProkeimenon(day);
   };
 
   let tone = getOctoechosTone(weeksDiff);
-  console.log("tone", tone)
+  console.log("tone", tone);
 
   const weekdays = [
     "niedziela",
@@ -126,13 +131,67 @@ const Vespers = () => {
     getStichos(tone, day, false);
     getStichos(tone, day, true);
     getProkeimenon(day);
-  }, []);
+  }, [tone, day]);
+
+  const items = [
+    {
+      label: (
+        <Switch
+          style={{ backgroundColor: "#a8071a" }}
+          checkedChildren="Z kapłanem"
+          unCheckedChildren="Bez kapłana"
+          onChange={(checked, e) => {
+            setReaderView(checked, e);
+          }}
+        />
+      ),
+      key: "0",
+    },
+    {
+      label: (
+        <ConfigProvider locale={locale}>
+          <DatePicker
+            // placeholder="Wybierz datę"
+            // defaultValue={dayjs("YYYY-MM-DD")}
+            // format={dayjs}
+            onChange={(dateRaw, dateString) =>
+              onDateChange(dateRaw, dateString)
+            }
+          />
+        </ConfigProvider>
+      ),
+      key: "1",
+    },
+  ];
+  
+  const handleMenuClick = (e) => {
+    if (e.key === "3") {
+      setOpenDropdown(false);
+    }
+  };
+
+  const handleOpenChange = (flag: boolean) => {
+    setOpenDropdown(flag);
+  };
 
   return (
     <div className="service">
       <div className="service__header">
         <Space direction="horizontal">
-          <DatePicker
+          <Dropdown
+            menu={{ items, onClick: handleMenuClick }}
+            trigger={["click"]}
+            onOpenChange={handleOpenChange}
+            open={openDropdown}
+          >
+            <a onClick={(e) => e.preventDefault()}>
+              <Space>
+                <RiSettings4Fill className="settings-icon" />
+              </Space>
+            </a>
+          </Dropdown>
+
+          {/* <DatePicker
             onChange={(dateRaw, dateString) =>
               onDateChange(dateRaw, dateString)
             }
@@ -144,12 +203,12 @@ const Vespers = () => {
             onChange={(checked, e) => {
               setReaderView(checked, e);
             }}
-          />
+          /> */}
         </Space>
       </div>
       <h2 className="service-name">Nieszpory</h2>
       <p className="rubric">
-        Ton {day != 6 ? tone : tone+1}, {weekdays[day]}
+        Ton {tone}, {weekdays[day]}
       </p>
       {!readerView ? (
         <RegularInitialPrayers />
@@ -576,65 +635,72 @@ const Vespers = () => {
         Po ekfonesis stichery na stichownie, wśród których mówimy te isomelosy,
         jeśli nie ma święta Pańskiego.
       </p>
-      {day === 6 ? <><p className="first-letter propers stichera">{aposticha[4]}</p>
-      <p className="rubric">Stichos 1: </p>
-      <p className="first-letter verse">
-      Pan zakrólował, w majestat jest obleczony.
-      <span>Obleczony jest Pan, przepasany potęgą.</span>
-      </p>
-      <p className="first-letter propers stichera">{aposticha[3]}</p>
-      <p className="rubric">Stichos 2: </p>
-      <p className="first-letter verse">
-      A świat, który umocnił,
-      <span>nie zachwieje się.</span> 
-      </p>
-      <p className="first-letter propers stichera">{aposticha[2]}</p>
-      <p className="rubric">Stichos 2: </p>
-      <p className="first-letter verse">
-      Domowi Twemu, Panie,
-      <span>przystoi świętość po wszystkie dni.</span> 
-      </p>
-      <p className="first-letter propers stichera">{aposticha[1]}</p>
-      <p className="rubric">
-        Jeśli jest sobota, mówimy Pan zakrólował, jak to wskazano (s. ). Jeśli
-        wypadanie święto Pańskie, to jego stichosy. Tak samo, jeśli wypadnie
-        wspomnienie świętego.
-      </p>
-      <p className="rubric">
-        <span className="rubric--glory">Chwała, i teraz.</span>
-      </p>{" "}
-      <p className="rubric">Teotokion:</p>
-      <p className="first-letter propers stichera">{aposticha[0]}</p></> 
-      : <><p className="first-letter propers stichera">{aposticha[3]}</p>
-      <p className="rubric">Stichos 1: </p>
-      <p className="first-letter verse">
-        Do Ciebie wznoszę oczy moje,
-        <span>który mieszkasz w niebie. </span>
-        Oto jak oczy sług zwrócone są na ręce ich panów
-        <span>i jak oczy służącej na ręce jej pani, </span>
-        tak oczy nasze ku Bogu, Bogu naszemu,
-        <span>dopóki nie ulituje się nad nami.</span>
-      </p>
-      <p className="first-letter propers stichera">{aposticha[2]}</p>
-      <p className="rubric">Stichos 2: </p>
-      <p className="first-letter verse">
-        Zmiłuj się nad nami, Panie, zmiłuj się nad nami,
-        <span>albowiem wzgardą jesteśmy nasyceni. </span>
-        Dusza nasza nasycona jest szyderstwem zarozumialców
-        <span>i wzgardą pyszałków.</span>
-      </p>
-      <p className="first-letter propers stichera">{aposticha[1]}</p>
-      <p className="rubric">
-        Jeśli jest sobota, mówimy Pan zakrólował, jak to wskazano (s. ). Jeśli
-        wypadanie święto Pańskie, to jego stichosy. Tak samo, jeśli wypadnie
-        wspomnienie świętego.
-      </p>
-      <p className="rubric">
-        <span className="rubric--glory">Chwała, i teraz.</span>
-      </p>{" "}
-      <p className="rubric">Teotokion:</p>
-      <p className="first-letter propers stichera">{aposticha[0]}</p></>}
-      
+      {day === 6 ? (
+        <>
+          <p className="first-letter propers stichera">{aposticha[4]}</p>
+          <p className="rubric">Stichos 1: </p>
+          <p className="first-letter verse">
+            Pan zakrólował, w majestat jest obleczony.
+            <span>Obleczony jest Pan, przepasany potęgą.</span>
+          </p>
+          <p className="first-letter propers stichera">{aposticha[3]}</p>
+          <p className="rubric">Stichos 2: </p>
+          <p className="first-letter verse">
+            A świat, który umocnił,
+            <span>nie zachwieje się.</span>
+          </p>
+          <p className="first-letter propers stichera">{aposticha[2]}</p>
+          <p className="rubric">Stichos 2: </p>
+          <p className="first-letter verse">
+            Domowi Twemu, Panie,
+            <span>przystoi świętość po wszystkie dni.</span>
+          </p>
+          <p className="first-letter propers stichera">{aposticha[1]}</p>
+          <p className="rubric">
+            Jeśli jest sobota, mówimy Pan zakrólował, jak to wskazano (s. ).
+            Jeśli wypadanie święto Pańskie, to jego stichosy. Tak samo, jeśli
+            wypadnie wspomnienie świętego.
+          </p>
+          <p className="rubric">
+            <span className="rubric--glory">Chwała, i teraz.</span>
+          </p>{" "}
+          <p className="rubric">Teotokion:</p>
+          <p className="first-letter propers stichera">{aposticha[0]}</p>
+        </>
+      ) : (
+        <>
+          <p className="first-letter propers stichera">{aposticha[3]}</p>
+          <p className="rubric">Stichos 1: </p>
+          <p className="first-letter verse">
+            Do Ciebie wznoszę oczy moje,
+            <span>który mieszkasz w niebie. </span>
+            Oto jak oczy sług zwrócone są na ręce ich panów
+            <span>i jak oczy służącej na ręce jej pani, </span>
+            tak oczy nasze ku Bogu, Bogu naszemu,
+            <span>dopóki nie ulituje się nad nami.</span>
+          </p>
+          <p className="first-letter propers stichera">{aposticha[2]}</p>
+          <p className="rubric">Stichos 2: </p>
+          <p className="first-letter verse">
+            Zmiłuj się nad nami, Panie, zmiłuj się nad nami,
+            <span>albowiem wzgardą jesteśmy nasyceni. </span>
+            Dusza nasza nasycona jest szyderstwem zarozumialców
+            <span>i wzgardą pyszałków.</span>
+          </p>
+          <p className="first-letter propers stichera">{aposticha[1]}</p>
+          <p className="rubric">
+            Jeśli jest sobota, mówimy Pan zakrólował, jak to wskazano (s. ).
+            Jeśli wypadanie święto Pańskie, to jego stichosy. Tak samo, jeśli
+            wypadnie wspomnienie świętego.
+          </p>
+          <p className="rubric">
+            <span className="rubric--glory">Chwała, i teraz.</span>
+          </p>{" "}
+          <p className="rubric">Teotokion:</p>
+          <p className="first-letter propers stichera">{aposticha[0]}</p>
+        </>
+      )}
+
       <p className="rubric">Także modlitwa świętego Symeona Starca:</p>
       <p className="first-letter indent">
         T<span className="prayer-incipit">eraz pozwalasz odejść</span> słudze

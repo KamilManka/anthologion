@@ -10,6 +10,7 @@
 $red: red;
 $black: black;
 $background-light: #fff5e9;
+$background-footer-light: #8f2121;
 $propers-light: #faf5f0;
 
 body {
@@ -22,6 +23,12 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.settings-icon {
+    font-size: 25px;
+    color: $background-footer-light;
+    margin:10px;
 }
 .service {
     display: flex;
@@ -168,11 +175,39 @@ justify-content: flex-start;
     margin: 10px 0;
 }
 
+.footer {
+    background-color: $background-footer-light;
+    width: 100%;
+    color: #faf5f0;
+    min-height: 100px;
+    padding: 20px 150px;
+    text-justify: center;
+    font-size: 14px !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    line-height: 1.5 !important;
+    a {
+        text-decoration:none;
+        color: rgb(255, 244, 146);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        font-size: 14px !important;
+        line-height: 1.5 !important;
+    }
+}
+
 @media screen and (max-width: 500px) {
     .main {
         margin: 50px 30px;
     }
     .indent {
         text-align: unset;
+    }
+    .footer {
+        padding: 20px 30px;
+    }
+}
+
+@media screen and (min-width: 501px) and (max-width: 800px) {
+    .footer {
+        padding: 20px 30px;
     }
 }
