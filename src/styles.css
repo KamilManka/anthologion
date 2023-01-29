@@ -59,11 +59,14 @@ body {
 
 .propers {
   background-color: #faf5f0;
-  padding: 7px 10px;
+  padding: 10px 15px;
   box-shadow: 0px 0px 4px 1px rgb(193, 182, 162);
   border: solid 1px #faf5f0;
   border-radius: 5px;
   width: 100%;
+}
+.propers p + p {
+  padding-top: 10px;
 }
 
 .verse {

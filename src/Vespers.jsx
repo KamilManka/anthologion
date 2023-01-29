@@ -14,16 +14,17 @@ import {
 import RegularInitialPrayers from "./RegularInitialPrayers";
 import { SettingOutlined, SettingTwoTone } from "@ant-design/icons";
 import { RiSettings4Fill } from "react-icons/ri";
-import plPL from 'antd/locale/pl_PL';
-import dayjs from 'dayjs';
-import 'dayjs/locale/pl';
-dayjs.locale('pl-pl');
+import plPL from "antd/locale/pl_PL";
+import dayjs from "dayjs";
+import "dayjs/locale/pl";
+dayjs.locale("pl-pl");
 
 const Vespers = () => {
   let [stichera, setStichera] = useState([]);
   let [aposticha, setAposticha] = useState([]);
   let [prokeimenon, setProkeimenon] = useState([]);
   const [readerView, setReaderView] = useState();
+  let [troparia, setTroparia] = useState([]);
   let [date, setDate] = useState(new Date());
   const [openDropdown, setOpenDropdown] = useState(false);
   const locale = plPL;
@@ -43,24 +44,35 @@ const Vespers = () => {
     new Date("2022-06-24"),
     new Date(date.toISOString().slice(0, 10))
   );
+
+  let lentWeeksDiff = getWeeksDiff(
+    new Date(date.toISOString().slice(0, 10)),
+    new Date("2023-04-16")
+  );
+  console.log(lentWeeksDiff);
+
   const getOctoechosTone = (weeksDiff) => {
     let toneNum = 0;
-    console.log("weeksDiff", weeksDiff);
     if (weeksDiff % 8 === 0) {
       toneNum = 8;
-      console.log("if", toneNum);
     } else {
       toneNum = Math.ceil(weeksDiff % 8);
-      console.log("else", toneNum);
     }
 
     return toneNum;
   };
 
   const getStichos = async (tone, day, isAposticha) => {
+    let table;
+    if (lentWeeksDiff > 10) {
+      table = "octoechos-vespers";
+    } else {
+      table = "triodion-vespers";
+    }
+    console.log(table);
     let sticheraArray = [];
     let { data: octoechos, error } = await supabase
-      .from("octoechos-vespers")
+      .from(table)
       .select("text")
       .eq("tone", tone)
       .eq("aposticha", isAposticha)
@@ -98,6 +110,31 @@ const Vespers = () => {
 
     setProkeimenon(arr);
   };
+
+  const getTroparia = async (day) => {
+    let tropariaArray = [];
+    let { data: troparia, error } = await supabase
+      .from("troparia-weekdays")
+      .select("text-1,text-2,text-3, text-4")
+      .eq("weekday", day + 1);
+    let data = troparia[0];
+    console.log("troparia", data);
+
+    for (const [key, value] of Object.entries(data)) {
+      tropariaArray = [...tropariaArray, value];
+    }
+    console.log(tropariaArray);
+    let arr = [];
+    for (let i = 0; i < tropariaArray.length; i++) {
+      if (tropariaArray[i]) {
+        arr.push(tropariaArray[i]);
+      }
+    }
+    arr.reverse();
+    console.log("tropariaArr", arr);
+    setTroparia(arr);
+  };
+
   let day = date.getDay();
 
   const onDateChange = (dateRaw, dateString) => {
@@ -117,6 +154,21 @@ const Vespers = () => {
   let tone = getOctoechosTone(weeksDiff);
   console.log("tone", tone);
 
+  
+
+  // const extraTroparia = () => {
+  //   // let extraTroparia = troparia.slice(2);
+
+  //   extraTroparia.map((el, index) => {
+  //     return (
+  //       <p key={index} className="first-letter propers">
+  //         {el}
+  //       </p>
+  //     );
+  //   });
+  // };
+  
+
   const weekdays = [
     "niedziela",
     "poniedziałek",
@@ -131,13 +183,16 @@ const Vespers = () => {
     getStichos(tone, day, false);
     getStichos(tone, day, true);
     getProkeimenon(day);
-  }, [tone, day]);
+    getTroparia(day);
 
+    console.log(day);
+  }, [tone, day]);
+  let extraTroparia = troparia.slice(2);
   const items = [
     {
       label: (
         <Switch
-          style={{ backgroundColor: "#a8071a" }}
+          style={{ backgroundColor: "#8f2121" }}
           checkedChildren="Z kapłanem"
           unCheckedChildren="Bez kapłana"
           onChange={(checked, e) => {
@@ -163,14 +218,14 @@ const Vespers = () => {
       key: "1",
     },
   ];
-  
+
   const handleMenuClick = (e) => {
     if (e.key === "3") {
       setOpenDropdown(false);
     }
   };
 
-  const handleOpenChange = (flag: boolean) => {
+  const handleOpenChange = (flag) => {
     setOpenDropdown(flag);
   };
 
@@ -546,18 +601,18 @@ const Vespers = () => {
         każdym czasie, śpiewano Tobie zbożnymi pieśniami, Synu Boży, co życie
         dajesz, przeto świat Cię sławi.
       </p>
-      <p className="rubric">
+      {/* <p className="rubric">
         Należy wiedzieć, że gdy jest Wielki Post lub śpiewamy
         <span className="rubric--quote">Alleluja</span>, to zamiast prokimenonów
         dni tygodnia śpiewamy:
-      </p>
-      <p className="rubric">PROKIMENONY???</p>
-      <p className="rubric">
+      </p> */}
+      <p className="rubric">Prokimenon:</p>
+      {/* <p className="rubric">
         W niedzielę i w piątek wieczorem nigdy nie śpiewa się Alleluja.
       </p>
       <p className="rubric">
         Jeśli natomiast śpiewano Bóg i Pan, to śpiewamy te prokimenony:
-      </p>
+      </p> */}
       <div className="propers">
         {prokeimenon.length <= 2 ? (
           <>
@@ -631,10 +686,7 @@ const Vespers = () => {
           Dopełnijmy wieczorną modlitwę naszą do Pana.
         </>
       )}
-      <p className="rubric">
-        Po ekfonesis stichery na stichownie, wśród których mówimy te isomelosy,
-        jeśli nie ma święta Pańskiego.
-      </p>
+      <p className="rubric">Stichery:</p>
       {day === 6 ? (
         <>
           <p className="first-letter propers stichera">{aposticha[4]}</p>
@@ -656,11 +708,11 @@ const Vespers = () => {
             <span>przystoi świętość po wszystkie dni.</span>
           </p>
           <p className="first-letter propers stichera">{aposticha[1]}</p>
-          <p className="rubric">
+          {/* <p className="rubric">
             Jeśli jest sobota, mówimy Pan zakrólował, jak to wskazano (s. ).
             Jeśli wypadanie święto Pańskie, to jego stichosy. Tak samo, jeśli
             wypadnie wspomnienie świętego.
-          </p>
+          </p> */}
           <p className="rubric">
             <span className="rubric--glory">Chwała, i teraz.</span>
           </p>{" "}
@@ -688,11 +740,11 @@ const Vespers = () => {
             <span>i wzgardą pyszałków.</span>
           </p>
           <p className="first-letter propers stichera">{aposticha[1]}</p>
-          <p className="rubric">
+          {/* <p className="rubric">
             Jeśli jest sobota, mówimy Pan zakrólował, jak to wskazano (s. ).
             Jeśli wypadanie święto Pańskie, to jego stichosy. Tak samo, jeśli
             wypadnie wspomnienie świętego.
-          </p>
+          </p> */}
           <p className="rubric">
             <span className="rubric--glory">Chwała, i teraz.</span>
           </p>{" "}
@@ -740,10 +792,37 @@ const Vespers = () => {
         <p className="rubric">Chór:</p> Amen.
       </div>
       <p className="rubric">
-        Troparion wypadającego święta lub świętego, bądź dnia.
-        <span className="rubric--glory"> Chwała, i teraz. </span>
+        Troparion i kontakiony:
       </p>
-      <p className="rubric">Teotokion: </p>
+      {troparia.length <= 2 ? (
+        <>
+          <p className="first-letter propers">{troparia[1]}</p>
+          <p className="rubric">
+            <span className="rubric--glory"> Chwała, i teraz. </span>
+          </p>
+          <p className="first-letter propers">{troparia[0]}</p>
+        </>
+      ) : (
+        <><p  className="propers">
+        {
+        extraTroparia.map((el, index) => {
+      return (
+        <p key={index} className="first-letter">
+          {el}
+        </p>
+      );
+    })}</p>
+          {/* <p className="first-letter propers">{troparia[2]}</p> */}
+          <p className="rubric">
+            <span className="rubric--glory"> Chwała. </span>
+          </p>
+          <p className="first-letter propers">{troparia[1]}</p>
+          <p className="rubric">
+            <span className="rubric--glory"> I teraz. </span>
+          </p>
+          <p className="first-letter propers">{troparia[0]}</p>
+        </>
+      )}
       <p className="rubric">Rozesłanie</p>
     </div>
   );

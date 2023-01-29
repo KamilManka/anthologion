@@ -58,13 +58,16 @@ body {
 .propers {
     @extend .indent;
     background-color: $propers-light;
-    padding: 7px 10px;
+    padding: 10px 15px;
     -webkit-box-shadow: 0px 0px 4px 1px rgba(193, 182, 162, 1);
     -moz-box-shadow: 0px 0px 4px 1px rgba(193, 182, 162, 1);
     box-shadow: 0px 0px 4px 1px rgba(193, 182, 162, 1);
     border: solid 1px $propers-light;
     border-radius: 5px;
     width: 100%;
+    p + p{
+        padding-top: 10px;
+    }
 }
 .verse {
     margin-left: 30px;
