@@ -24,7 +24,17 @@ body {
     justify-content: center;
     align-items: center;
 }
-
+.header {
+    width: 100%;
+}
+.nav-menu {
+    width: 100%;
+}
+.settings-space {
+    position: absolute;
+    top: -4px;
+    right: 20px;
+}
 .settings-icon {
     font-size: 25px;
     color: $background-footer-light;

@@ -19,6 +19,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/pl";
 import Psalm103 from "./Psalm103";
 import LordICried from "./LordICried";
+import SettingsIcon from "./SettingsIcon";
 dayjs.locale("pl-pl");
 
 const Vespers = () => {
@@ -227,11 +228,11 @@ const Vespers = () => {
   const handleOpenChange = (flag) => {
     setOpenDropdown(flag);
   };
-
+console.log("day",day)
   return (
     <div className="service">
       <div className="service__header">
-        <Space direction="horizontal">
+        <Space direction="horizontal" className="settings-space">
           <Dropdown
             menu={{ items, onClick: handleMenuClick }}
             trigger={["click"]}
@@ -244,20 +245,6 @@ const Vespers = () => {
               </Space>
             </a>
           </Dropdown>
-
-          {/* <DatePicker
-            onChange={(dateRaw, dateString) =>
-              onDateChange(dateRaw, dateString)
-            }
-          />
-          <Switch
-            style={{ backgroundColor: "#a8071a" }}
-            checkedChildren="Z kapłanem"
-            unCheckedChildren="Bez kapłana"
-            onChange={(checked, e) => {
-              setReaderView(checked, e);
-            }}
-          /> */}
         </Space>
       </div>
       <h2 className="service-name">Nieszpory</h2>
@@ -332,7 +319,7 @@ const Vespers = () => {
           <LittleEktenia />
         </>
       )}
-<LordICried stichera={stichera} />
+      <LordICried stichera={stichera} />
       <p className="rubric">Hymn Sofroniusza, patriarchy jerozolimskiego:</p>
       <p className="first-letter indent">
         P<span className="prayer-incipit">ogodna światłości</span> świętej
@@ -554,7 +541,26 @@ const Vespers = () => {
           <p className="first-letter propers">{troparia[0]}</p>
         </>
       )}
-      <p className="rubric">Rozesłanie</p>
+      <p className="rubric">Rozesłanie:</p>
+      <p className="rubric">Lektor:</p> 
+      <p className="first-letter indent">
+        Umocnij, Boże, świętą prawosławną wiarę i prawosławnych chrześcijan na
+        wieki wieków.
+      </p>
+      <p className="rubric">Chór:</p><p className="first-letter indent">
+        Czcigodniejszą od Cherubinów i bez porównania chwalebniejszą od
+        Serafinów, któraś bez zmiany Boga Słowo zrodziła, Ciebie, prawdziwą
+        Bogurodzicę, wysławiamy.
+      </p>
+      <p className="first-letter indent">Panie, zmiłuj się <span className="rubric">(trzy razy)</span>.</p>
+      <p className="first-letter indent">Panie, pobłogosław!</p>
+      <p className="rubric">Lektor:</p> 
+      <p  className="first-letter indent">{day === 0 ? "Zmartychwstały " : null}
+        Panie Jezu Chryste, Synu Boży, dla modlitw Przeczystej Twojej Matki,
+        świętych i bogonośnych Ojców naszych i wszystkich świętych, zmiłuj się
+        nad nami i zbaw nas, jako dobry i przyjaciel człowieka.
+      </p>
+      <p className="ektenia__choir"><p className="rubric">Chór:</p>Amen.</p>
     </div>
   );
 };
